@@ -1,5 +1,55 @@
 <?php
 
+	//Start session
+	session_start();
+
+	//Connect to the DB
+	$dbc = new mysqli('localhost', 'root', '', 'shopping_cart');
+
+	//Create a cart if one doesn't exist
+	if ( !isset($_SESSION['cart']) ) {
+		
+		//Create the cart
+		$_SESSION['cart'] = [];
+
+	}
+
+	//If clearcart is in the GET array
+	if ( isset($_GET['clearcart']) ) {
+
+		//Clear the cart
+		$_SESSION['cart'] = [];
+
+		//Refresh the page
+		header('Location: index.php');
+	}
+
+	//Did the user submit a form?
+	if ( isset($_POST['add-to-cart']) ) {
+
+		//Find the price of the product
+		$id = $dbc->real_escape_string($_POST['product-id']);
+
+		//Prepare SQL to get the price of the product
+		$sql = "SELECT price FROM products WHERE id = $id";
+
+		//Run the query
+		$result = $dbc->query($sql);
+
+		//Validation goes here
+
+		//Extract the data
+		$result = $result->fetch_assoc();
+		
+		//Add the item to the cart
+		$_SESSION['cart'][] = [
+			'id'=>$_POST['product-id'],
+			'name'=>$_POST['name'],
+			'description'=>$_POST['description'],
+			'price'=> $result['price']
+			];
+	}
+
 	//Include header
 	include 'templates/header.template.php';
 
@@ -8,9 +58,6 @@
 	<h1>Products</h1>
 
 	<?php
-
-		//Connect to the DB
-		$dbc = new mysqli('localhost', 'root', '', 'shopping_cart');
 
 		// Get all the products from the DB
 		$sql = "SELECT id, name, description, price, stock FROM products";
