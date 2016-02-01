@@ -8,8 +8,8 @@ include 'templates/header.template.php';
 //Display cart contents
 include 'templates/cart-contents.template.php';
 
-
-
+//Checkout form
+include 'templates/checkout-form.template.php';
 
 
 
