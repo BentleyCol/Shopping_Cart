@@ -34,6 +34,9 @@ $dbc->query($sql);
 //Get the ID of this order
 $orderID = $dbc->insert_id;
 
+//Save the order ID in the session
+$_SESSION['orderID'] = $orderID;
+
 //Loop over the cart contents and add them to the ordered products table
 foreach ($_SESSION['cart'] as $product) {
 
